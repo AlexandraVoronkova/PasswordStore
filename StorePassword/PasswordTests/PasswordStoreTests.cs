@@ -29,7 +29,7 @@ namespace PasswordTests
         [Test]
         public void CreateFileStore()
         {
-            Store store = new FileStore("D:\\4.txt");
+            Store store = new FileStore("4.txt");
             Assert.IsNotNull(store);
         }
         [Test]
@@ -43,7 +43,7 @@ namespace PasswordTests
         [SetUp]
         public void BeforeTests()
         {
-            store = new FileStore("D:\\4.txt");
+            store = new FileStore("4.txt");
             record = new Record();
             record.Login = "login";
             record.NameRecord = "name";
