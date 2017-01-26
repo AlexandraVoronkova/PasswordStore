@@ -121,7 +121,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 342);
+            this.ClientSize = new System.Drawing.Size(563, 326);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -135,6 +135,7 @@
             this.Text = "Form3";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

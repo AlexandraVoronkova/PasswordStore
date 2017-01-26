@@ -19,8 +19,8 @@ namespace StorePassword
         }
         private void buttonGenPass_Click(object sender, EventArgs e)
         {
-            PasswordGeneration PassGeneration = new PasswordGeneration(count);
-            var password = PassGeneration.GetPass();
+            PasswordGeneration PassGeneration = new PasswordGeneration();
+            var password = PassGeneration.GetPass(count);
             textBox1.Text = password;
         }
         private void trackBar1_Scroll(object sender, EventArgs e)

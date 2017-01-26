@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace StorePassword
 {
-    class PasswordGeneration
+    public class PasswordGeneration
     {
-        int lenPassword;
-        public PasswordGeneration(int count)
-        {
-            lenPassword = count;
-        }
-        public string GetPass()
+        public string GetPass(int lenPassword)
         {
             int[] arr = new int[lenPassword];
             Random rnd = new Random();

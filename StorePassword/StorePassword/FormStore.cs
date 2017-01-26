@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//using System.Collections.Generic;
+//using System.ComponentModel;
+//using System.Data;
+//using System.Drawing;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-using System.Security;
-using System.Security.Cryptography;
-using System.Runtime.InteropServices;
+//using System.IO;
+//using System.Security;
+//using System.Security.Cryptography;
+//using System.Runtime.InteropServices;
 
 namespace StorePassword
 {
     public partial class FormStore : Form
     {
-        FileStore fileStore;
+        Store store;
         string password;
         public FormStore(string pathFile, string password)
         {
             InitializeComponent();
-            fileStore = new FileStore(pathFile);
-            dataGridView1.DataSource = this.fileStore.ListRecord;
+            store = new FileStore(pathFile);
+            if (this.store.ListRecord.Count!=0)
+                dataGridView1.DataSource = this.store.ListRecord;
             this.password = password;
         }
         public string copy = "";
@@ -57,9 +58,9 @@ namespace StorePassword
             FormRecord f3 = new FormRecord();
             f3.Owner = this;
             f3.ShowDialog();
-            this.fileStore.AddRecord(f3.record);
+            this.store.AddRecord(f3.record);
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = this.fileStore.ListRecord;
+            dataGridView1.DataSource = this.store.ListRecord;
         }
         private void editRecordToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -71,33 +72,49 @@ namespace StorePassword
             f3.textBox3.Text = row.Cells[2].Value.ToString();
             f3.ShowDialog();
             int index = dataGridView1.CurrentRow.Index;
-            this.fileStore.ChangeRecord(index, f3.record);
+            this.store.ChangeRecord(index, f3.record);
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = this.fileStore.ListRecord;
+            dataGridView1.DataSource = this.store.ListRecord;
         }
         private void deleteRecordToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int index = dataGridView1.CurrentRow.Index;
-            this.fileStore.DeleteRecord(index);
+            this.store.DeleteRecord(index);
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = this.fileStore.ListRecord;
+            dataGridView1.DataSource = this.store.ListRecord;
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (StreamWriter writer = new StreamWriter(this.fileStore.PathFile))
+            store.StoreInputFile(this.password);
+        }
+        private void FormStore_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult res = MessageBox.Show("Сохранить изменения?", "Закрытие хранилища", MessageBoxButtons.YesNoCancel);
+            if (res == DialogResult.Yes)
             {
-                for (int i = 0; i < this.fileStore.ListRecord.Count; i++)
+                try
                 {
-                    writer.Write(this.fileStore.ListRecord[i].NameRecord);
-                    writer.Write('#');
-                    writer.Write(this.fileStore.ListRecord[i].Login);
-                    writer.Write('#');
-                    writer.Write(this.fileStore.ListRecord[i].Password);
-                    writer.WriteLine();
+                    saveToolStripMenuItem_Click(sender, e);
+                }
+                catch (Exception)
+                {
+                    e.Cancel = true;
                 }
             }
-            CryptoProvadercs crypto = new CryptoProvadercs();
-            crypto.Encrypt(this.password, this.fileStore.PathFile);
+            if (res == DialogResult.No)
+            {
+                try
+                {
+                    CryptoProviderAES crypto = new CryptoProviderAES();
+                    store.EncryptStore(password);
+                }
+                catch (Exception)
+                {
+                    e.Cancel = true;
+                }
+            }
+            if (res == DialogResult.Cancel)
+                e.Cancel = true;
         }
     }
 }
